@@ -12,20 +12,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Checkout the repository code to the runner
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      # Set up Node.js environment with version 24
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 24
 
+      # Install npm packages defined in package.json
       - name: Install Dependencies
         run: npm install
 
+      # Run syntax/formatting checks on the code
       - name: Run Linter
         run: npm run lint
 
+      # Run the project's native test suite
       - name: Run Tests
         run: npm test
 
@@ -37,23 +42,33 @@ jobs:
     if: "${{ secrets.ANTIGRAVITY_TOKEN != '' }}"
     
     steps:
+      # Checkout the repository code to the runner
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      # Download, install, and add the Antigravity CLI ('agy') to the runner's PATH
       - name: Install Antigravity CLI
         run: |
+          # Fetch and execute the official installation script
           curl -fsSL https://antigravity.google/cli/install.sh | bash
+          # Add the installation path to GITHUB_PATH to make 'agy' available in subsequent steps
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
+      # Run a headless AI audit using the 'agy' CLI and save it to audit_report.md
       - name: Run Automated Audit
         env:
           ANTIGRAVITY_TOKEN: ${{ secrets.ANTIGRAVITY_TOKEN }}
         run: |
+          # Initialize the markdown file with a header
           echo "### Antigravity AI Code Audit Report" > audit_report.md
+          # Append the generation timestamp to the file
           echo "Generated on: $(date)" >> audit_report.md
+          # Add a blank spacing line
           echo "" >> audit_report.md
+          # Run non-interactive agent audit print mode to output markdown report
           agy --print "Perform a security, quality, and structure audit on the repository. Highlight potential issues, code quality, and adherence to AGENTS.md instructions. Format the output in Markdown." --dangerously-skip-permissions >> audit_report.md
 
+      # Upload the generated report file as a GitHub Actions build artifact
       - name: Upload Audit Report
         uses: actions/upload-artifact@v4
         with:
