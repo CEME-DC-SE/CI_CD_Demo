@@ -55,3 +55,4 @@ To enable automated agent audits in your GitHub repository:
 3. Create a new repository secret:
    - **Name**: `ANTIGRAVITY_TOKEN`
    - **Value**: *[Paste your Antigravity Token]*
+4. Push changes to the `main` branch to trigger the pipeline.
