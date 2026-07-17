@@ -47,6 +47,9 @@ jobs:
       # Checkout the repository code to the runner
       - name: Checkout Code
         uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.ref || github.ref }}
+
 
       # Download, install, and add the Antigravity CLI ('agy') to the runner's PATH
       - name: Install Antigravity CLI
