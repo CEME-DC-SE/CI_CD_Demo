@@ -81,6 +81,7 @@ jobs:
         if: ${{ env.ANTIGRAVITY_TOKEN != '' }}
         uses: actions/upload-artifact@v7
         with:
-          name: antigravity-audit-report
           path: audit_report.md
+          archive: false
+
 
