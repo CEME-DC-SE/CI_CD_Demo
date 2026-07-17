@@ -38,6 +38,8 @@ jobs:
     name: Antigravity Code Audit
     needs: build-and-test
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     env:
       ANTIGRAVITY_TOKEN: ${{ secrets.ANTIGRAVITY_TOKEN }}
     
@@ -75,6 +77,16 @@ jobs:
           echo "" >> audit_report.md
           # Run non-interactive agent audit print mode to output markdown report
           agy --print "Perform a security, quality, and structure audit on the repository. Highlight potential issues, code quality, and adherence to AGENTS.md instructions. Format the output in Markdown." --dangerously-skip-permissions >> audit_report.md
+
+      # Commit and push the generated audit report back to the repository
+      - name: Commit and Push Audit Report
+        if: ${{ env.ANTIGRAVITY_TOKEN != '' }}
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add audit_report.md
+          git diff-index --quiet HEAD || git commit -m "docs: update Antigravity AI Code Audit Report [skip ci]"
+          git push
 
       # Upload the generated report file as a GitHub Actions build artifact
       - name: Upload Audit Report
