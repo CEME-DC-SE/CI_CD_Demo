@@ -65,10 +65,9 @@ jobs:
         if: ${{ env.ANTIGRAVITY_TOKEN != '' }}
         run: |
           mkdir -p $HOME/.gemini/antigravity-cli
-          cat << 'EOF' > $HOME/.gemini/antigravity-cli/antigravity-oauth-token
-          {"token":{"access_token":"","token_type":"Bearer","refresh_token":"${{ env.ANTIGRAVITY_TOKEN }}","expiry":"0001-01-01T00:00:00Z"},"auth_method":"consumer"}
-EOF
+          printf '{"token":{"access_token":"","token_type":"Bearer","refresh_token":"%s","expiry":"0001-01-01T00:00:00Z"},"auth_method":"consumer"}\n' "$ANTIGRAVITY_TOKEN" > $HOME/.gemini/antigravity-cli/antigravity-oauth-token
           chmod 600 $HOME/.gemini/antigravity-cli/antigravity-oauth-token
+
 
       # Run a headless AI audit using the 'agy' CLI and save it to audit_report.md
       - name: Run Automated Audit
