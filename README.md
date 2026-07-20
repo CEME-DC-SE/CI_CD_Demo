@@ -4,11 +4,11 @@ This repository demonstrates a complete Node.js project integrated with a CI/CD 
 
 ## Repository Structure
 
-- [src/math.js](file:///workspaces/CI_CD_Demo/src/math.js): Contains core mathematical operations.
-- [test/math.test.js](file:///workspaces/CI_CD_Demo/test/math.test.js): Unit tests using Node.js's built-in test runner.
-- [package.json](file:///workspaces/CI_CD_Demo/package.json): Defines npm scripts for testing, linting, and project details.
-- [AGENTS.md](file:///workspaces/CI_CD_Demo/AGENTS.md): Contains instructions and quality control policies for the AI agent workspace.
-- [.github/workflows/ci.yml](file:///workspaces/CI_CD_Demo/.github/workflows/ci.yml): The GitHub Actions pipeline configuration file.
+- [src/math.js](./src/math.js): Contains core mathematical operations.
+- [test/math.test.js](./test/math.test.js): Unit tests using Node.js's built-in test runner.
+- [package.json](./package.json): Defines npm scripts for testing, linting, and project details.
+- [AGENTS.md](./AGENTS.md): Contains instructions and quality control policies for the AI agent workspace.
+- [.github/workflows/ci.yml](./.github/workflows/ci.yml): The GitHub Actions pipeline configuration file.
 
 ## Getting Started
 
@@ -31,7 +31,7 @@ This repository demonstrates a complete Node.js project integrated with a CI/CD 
 
 ## CI/CD Pipeline
 
-The GitHub Actions workflow defined in [.github/workflows/ci.yml](file:///workspaces/CI_CD_Demo/.github/workflows/ci.yml) has two main jobs:
+The GitHub Actions workflow defined in [.github/workflows/ci.yml](./.github/workflows/ci.yml) has two main jobs:
 
 1. **Build, Test & Lint**:
    - Checks out code.
@@ -39,13 +39,13 @@ The GitHub Actions workflow defined in [.github/workflows/ci.yml](file:///worksp
    - Runs `npm run lint` and `npm test` on every push or pull request to the `main` branch.
 
 2. **Antigravity Code Audit**:
-   - Triggers only when `ANTIGRAVITY_TOKEN` is configured as a GitHub Secret.
+   - Triggers when `ANTIGRAVITY_TOKEN` is configured as a GitHub Secret.
    - Installs the Antigravity CLI (`agy`).
-   - Runs a non-interactive audit of the repository using:
+   - Runs a non-interactive review of the repository:
      ```bash
-     agy --print "Perform a security, quality, and structure audit on the repository." --dangerously-skip-permissions
+     agy --print "Perform a code quality, architecture, and structure review on the repository..." --dangerously-skip-permissions
      ```
-   - Automatically saves and uploads the audit findings (`audit_report.md`) as a build artifact.
+   - Automatically commits, pushes, and uploads the audit findings ([audit_report.md](./audit_report.md)) as a build artifact.
 
 ## Configuring Antigravity Secrets in GitHub
 
@@ -56,3 +56,4 @@ To enable automated agent audits in your GitHub repository:
    - **Name**: `ANTIGRAVITY_TOKEN`
    - **Value**: *[Paste your Antigravity Token]*
 4. Push changes to the `main` branch to trigger the pipeline.
+
