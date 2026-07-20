@@ -18,9 +18,11 @@ graph TD
     F --> G{"ANTIGRAVITY_TOKEN exists?"}
     G -- "No" --> H["Skip Audit / Pipeline Success"]
     G -- "Yes" --> I["Install agy CLI"]
-    I --> J["Run non-interactive agy audit"]
-    J --> K["Upload Audit Report Artifact"]
-    K --> L["Pipeline Success"]
+    I --> J["Configure Credentials"]
+    J --> K["Run non-interactive agy audit"]
+    K --> L["Commit and Push Audit Report [skip ci]"]
+    L --> M["Upload Audit Report Artifact"]
+    M --> N["Pipeline Success"]
 ```
 
 ---
@@ -28,12 +30,12 @@ graph TD
 ## 2. CI/CD Files Configured
 
 The following configurations are placed at the root of the project:
-1. **[.github/workflows/ci.yml](file:///workspaces/CI_CD_Demo/.github/workflows/ci.yml)**: The GitHub Actions configuration file.
-2. **[AGENTS.md](file:///workspaces/CI_CD_Demo/AGENTS.md)**: Contains rules and execution policies for the AI agent inside the workspace.
+1. **[.github/workflows/ci.yml](./.github/workflows/ci.yml)**: The GitHub Actions configuration file.
+2. **[AGENTS.md](./AGENTS.md)**: Contains rules and execution policies for the AI agent inside the workspace.
 
 ### GitHub Actions YAML
 
-Below is the workflow code defined in [.github/workflows/ci.yml](file:///workspaces/CI_CD_Demo/.github/workflows/ci.yml):
+Below is the workflow code defined in [.github/workflows/ci.yml](./.github/workflows/ci.yml):
 
 ```yaml
 name: CI/CD Pipeline with Antigravity Agent
@@ -71,12 +73,16 @@ jobs:
     name: Antigravity Code Audit
     needs: build-and-test
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     env:
       ANTIGRAVITY_TOKEN: ${{ secrets.ANTIGRAVITY_TOKEN }}
     
     steps:
       - name: Checkout Code
         uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.ref || github.ref }}
 
       - name: Install Antigravity CLI
         if: ${{ env.ANTIGRAVITY_TOKEN != '' }}
@@ -84,20 +90,38 @@ jobs:
           curl -fsSL https://antigravity.google/cli/install.sh | bash
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
+      - name: Configure Credentials
+        if: ${{ env.ANTIGRAVITY_TOKEN != '' }}
+        run: |
+          mkdir -p $HOME/.gemini/antigravity-cli
+          printf '{"token":{"access_token":"","token_type":"Bearer","refresh_token":"%s","expiry":"0001-01-01T00:00:00Z"},"auth_method":"consumer"}\n' "$ANTIGRAVITY_TOKEN" > $HOME/.gemini/antigravity-cli/antigravity-oauth-token
+          chmod 600 $HOME/.gemini/antigravity-cli/antigravity-oauth-token
+
       - name: Run Automated Audit
         if: ${{ env.ANTIGRAVITY_TOKEN != '' }}
         run: |
           echo "### Antigravity AI Code Audit Report" > audit_report.md
           echo "Generated on: $(date)" >> audit_report.md
           echo "" >> audit_report.md
-          agy --print "Perform a security, quality, and structure audit on the repository. Highlight potential issues, code quality, and adherence to AGENTS.md instructions. Format the output in Markdown." --dangerously-skip-permissions >> audit_report.md
+          agy --print "Perform a code quality, architecture, and structure review on the repository. Highlight code cleanliness, test coverage, and adherence to AGENTS.md instructions. Format the output in Markdown." --dangerously-skip-permissions >> audit_report.md
+
+      - name: Commit and Push Audit Report
+        if: ${{ env.ANTIGRAVITY_TOKEN != '' }}
+        env:
+          TARGET_REF: ${{ github.event.pull_request.head.ref || github.ref_name }}
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add audit_report.md
+          git diff-index --quiet HEAD || git commit -m "docs: update Antigravity AI Code Audit Report [skip ci]"
+          git push origin HEAD:refs/heads/"$TARGET_REF"
 
       - name: Upload Audit Report
         if: ${{ env.ANTIGRAVITY_TOKEN != '' }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
-          name: antigravity-audit-report
           path: audit_report.md
+          archive: false
 ```
 
 > [!IMPORTANT]
@@ -124,7 +148,7 @@ When running `agy` programmatically or inside workflows, use the following optio
 ## 4. Local Validation
 
 Before pushing your changes, you can validate the code and formatting locally using:
-* **Run Tests**: `npm test` (uses [test/math.test.js](file:///workspaces/CI_CD_Demo/test/math.test.js))
+* **Run Tests**: `npm test` (uses [test/math.test.js](./test/math.test.js))
 * **Run Linter**: `npm run lint` (uses Node's native compiler `--check` to verify syntax)
 
 ---
@@ -141,4 +165,3 @@ When you run `npm test`, it calls Node's native test runner (`node --test test/*
 When you run `npm run lint`, it runs `node --check src/*.js test/*.js`:
 1. **Compilation Check:** The `--check` flag compile-checks the JavaScript files to catch syntax errors without executing the code.
 2. **Path Discovery:** It checks all `.js` files in `src/` and `test/` folders.
-
