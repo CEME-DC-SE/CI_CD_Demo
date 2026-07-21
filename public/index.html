@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CI_CD_Demo - Continuous Delivery Web Calculator</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <div class="logo-container">
+        <span class="logo-icon">🚀</span>
+        <div>
+          <h1>CI/CD Demo Calculator</h1>
+          <p class="subtitle">Continuous Delivery Pipeline • GitHub Pages</p>
+        </div>
+      </div>
+      <div class="status-badge">
+        <span class="pulse-dot"></span>
+        <span id="pipeline-status">CD Pipeline Active</span>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <!-- Calculator Card -->
+      <section class="card calculator-card">
+        <h2>Interactive Math Utility Engine</h2>
+        <p class="card-desc">Powered by <code>src/math.js</code> module</p>
+        
+        <div class="input-group">
+          <div class="field">
+            <label for="numA">First Operand (A)</label>
+            <input type="number" id="numA" value="12" placeholder="e.g. 12">
+          </div>
+          <div class="field">
+            <label for="numB">Second Operand (B)</label>
+            <input type="number" id="numB" value="4" placeholder="e.g. 4">
+          </div>
+        </div>
+
+        <div class="button-grid">
+          <button class="btn btn-op" data-op="add">Add (+)</button>
+          <button class="btn btn-op" data-op="subtract">Subtract (-)</button>
+          <button class="btn btn-op" data-op="multiply">Multiply (×)</button>
+          <button class="btn btn-op" data-op="divide">Divide (÷)</button>
+          <button class="btn btn-op" data-op="power">Power (^)</button>
+        </div>
+
+        <div class="result-display" id="result-box">
+          <span class="result-label">Result:</span>
+          <span class="result-value" id="result-value">16</span>
+        </div>
+      </section>
+
+      <!-- System Architecture Info Card -->
+      <section class="card info-card">
+        <h2>Pipeline Verification & Health</h2>
+        <div class="metrics-grid">
+          <div class="metric">
+            <span class="metric-val">100%</span>
+            <span class="metric-lbl">Test Pass Rate</span>
+          </div>
+          <div class="metric">
+            <span class="metric-val">8 / 8</span>
+            <span class="metric-lbl">Unit Tests</span>
+          </div>
+          <div class="metric">
+            <span class="metric-val">Zero</span>
+            <span class="metric-lbl">External Deps</span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <p>CI/CD Demo Project • Deployed via GitHub Actions Continuous Delivery</p>
+    </footer>
+  </div>
+
+  <script src="math.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
