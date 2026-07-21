@@ -70,5 +70,13 @@ function power(base, exponent) {
   return Math.pow(base, exponent);
 }
 
-module.exports = { add, subtract, multiply, divide, power };
+const MathLib = { add, subtract, multiply, divide, power };
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = MathLib;
+}
+if (typeof window !== 'undefined') {
+  window.MathLib = MathLib;
+}
+
 
