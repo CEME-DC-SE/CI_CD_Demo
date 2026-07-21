@@ -1,15 +1,22 @@
+/**
+ * Web Application Logic for CI/CD Demo Calculator
+ * Interacts with DOM elements and executes math operations using the exported window.MathLib object.
+ */
 document.addEventListener('DOMContentLoaded', () => {
+  // DOM element references
   const numA = document.getElementById('numA');
   const numB = document.getElementById('numB');
   const resultVal = document.getElementById('result-value');
   const buttons = document.querySelectorAll('.btn-op');
 
+  // Attach click event handlers to operator buttons
   buttons.forEach(btn => {
     btn.addEventListener('click', () => {
       const op = btn.getAttribute('data-op');
       const a = parseFloat(numA.value);
       const b = parseFloat(numB.value);
 
+      // Validate numeric inputs
       if (isNaN(a) || isNaN(b)) {
         resultVal.textContent = 'Error: Invalid Input';
         resultVal.style.color = '#f85149';
@@ -18,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       try {
         let res;
+        // Access window.MathLib populated by src/math.js script tag
         const math = window.MathLib || {};
         
         switch (op) {
@@ -40,12 +48,15 @@ document.addEventListener('DOMContentLoaded', () => {
             res = 0;
         }
 
+        // Display successful calculation result
         resultVal.textContent = res;
         resultVal.style.color = '#3fb950';
       } catch (err) {
+        // Display error message (e.g. division by zero)
         resultVal.textContent = `Error: ${err.message}`;
         resultVal.style.color = '#f85149';
       }
     });
   });
 });
+

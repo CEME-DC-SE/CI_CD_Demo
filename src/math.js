@@ -70,13 +70,25 @@ function power(base, exponent) {
   return Math.pow(base, exponent);
 }
 
+// Package all math utilities into a single module object
 const MathLib = { add, subtract, multiply, divide, power };
 
-if (typeof module !== 'undefined' && module.exports) {
+/**
+ * DUAL MODULE EXPORT PATTERN
+ * Allows the same source file to work seamlessly in two different environments:
+ * 1. Node.js Environment (for native 'npm test' suite using CommonJS)
+ * 2. Browser Environment (for live GitHub Pages web UI attaching to window.MathLib)
+ */
+
+// Environment Check 1: Node.js (CommonJS)
+if (typeof module !== "undefined" && module.exports) {
   module.exports = MathLib;
 }
-if (typeof window !== 'undefined') {
+
+// Environment Check 2: Web Browser (Window Global Object)
+if (typeof window !== "undefined") {
   window.MathLib = MathLib;
 }
+
 
 
