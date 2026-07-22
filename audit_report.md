@@ -1,106 +1,107 @@
 ### Antigravity AI Code Audit Report
-Generated on: Wed Jul 22 07:06:02 UTC 2026
+Generated on: Wed Jul 22 07:26:09 UTC 2026
 
 # Code Quality, Architecture, and Structure Review
 
 ## Executive Summary
 
-A comprehensive code quality, architecture, and compliance audit was performed on the [CI_CD_Demo](file:///home/runner/work/CI_CD_Demo/CI_CD_Demo) repository. The repository provides a lightweight math utility library, a web-based calculator interface, and an automated continuous integration & continuous delivery (CI/CD) pipeline powered by GitHub Actions.
+The `CI_CD_Demo` repository provides a lightweight, modular, and dependency-free Node.js and web application integrated with an automated CI/CD pipeline leveraging **GitHub Actions** and the **Google Antigravity CLI (`agy`)**.
 
-Overall, the codebase demonstrates high quality, zero third-party dependency overhead, clean documentation, and full compliance with [AGENTS.md](file:///home/runner/work/CI_CD_Demo/CI_CD_Demo/AGENTS.md). 
-
----
-
-## 1. Code Cleanliness & Quality
-
-| Component | Rating | Key Highlights | Areas for Improvement |
-| :--- | :---: | :--- | :--- |
-| **Core Engine** ([src/math.js](file:///home/runner/work/CI_CD_Demo/CI_CD_Demo/src/math.js)) | **Excellent** | Pure functions, explicit JSDoc annotations, strict numerical validation via `assertNumeric()`, and proper edge-case handling (`-0` and division by zero). | None. |
-| **Web UI** ([public/app.js](file:///home/runner/work/CI_CD_Demo/CI_CD_Demo/public/app.js)) | **Good** | Clean event listener setup, defensive fallback handling when `window.MathLib` is absent, and clear error status rendering. | Relies on fallback calculations when deployed (see Architecture finding below). |
-| **Linter Configuration** ([package.json](file:///home/runner/work/CI_CD_Demo/CI_CD_Demo/package.json)) | **Satisfactory** | Runs `node --check` natively without heavy external linting libraries. | Currently checks only `src/*.js` and `test/*.js`, missing `public/*.js`. |
-
-### Detailed Findings
-- **Defensive Input Handling**: [src/math.js](file:///home/runner/work/CI_CD_Demo/CI_CD_Demo/src/math.js#L6-L12) uses a helper function `assertNumeric()` to enforce parameter type safety and guard against `NaN` values before mathematical operations execute.
-- **Edge Case Rigor**: Special numeric conditions, such as IEEE 754 negative zero (`-0`), are explicitly detected using `Object.is(b, -0)` in `divide()`.
-- **Zero Third-Party Footprint**: [package.json](file:///home/runner/work/CI_CD_Demo/CI_CD_Demo/package.json) contains **0 dependencies and 0 devDependencies**, ensuring minimal supply-chain vulnerability and fast execution speeds.
+The codebase demonstrates exceptional cleanliness, zero external runtime/dev npm dependencies, dual-environment JavaScript module exports (Node.js CommonJS & Browser Window global), **98.55% overall test coverage**, and strict compliance with all guidelines specified in [AGENTS.md](file:///home/runner/work/CI_CD_Demo/CI_CD_Demo/AGENTS.md).
 
 ---
 
-## 2. Test Coverage & Execution
+## 1. Architecture & Repository Structure
 
-### Test Execution Status
-- **Framework**: Native Node.js test runner (`node --test`) paired with `node:assert`.
-- **Status**: 8 passed, 0 failed, 0 skipped.
-- **Duration**: ~72 ms.
-
-### Code Coverage Analysis
+The project follows a clean separation of concerns:
 
 ```
---------------------------------------------------------------
-file          | line % | branch % | funcs % | uncovered lines
---------------------------------------------------------------
-src           |        |          |         | 
- math.js      |  97.87 |    93.33 |  100.00 | 90-91
-test          |        |          |         | 
- math.test.js | 100.00 |   100.00 |  100.00 | 
---------------------------------------------------------------
-all files     |  98.55 |    96.77 |  100.00 | 
---------------------------------------------------------------
+CI_CD_Demo/
+├── .github/
+│   └── workflows/
+│       ├── ci.yml                 # Build, Lint, Unit Test, & Antigravity AI Code Audit
+│       └── cd.yml                 # GitHub Pages deployment pipeline
+├── public/                        # Web UI presentation layer
+│   ├── app.js                     # Client-side DOM event handler & calculation presenter
+│   ├── index.html                 # Semantic HTML5 calculator interface
+│   └── style.css                  # Modern dark-mode styling with CSS variables
+├── src/
+│   └── math.js                    # Core math domain logic with input validation
+├── test/
+│   └── math.test.js               # Native Node.js test suite
+├── AGENTS.md                      # AI agent instructions & quality control policy
+├── package.json                   # NPM configuration & native script declarations
+└── README.md                      # Project documentation
 ```
 
-### Key Coverage Takeaways
-1. **Core Library Coverage**: [src/math.js](file:///home/runner/work/CI_CD_Demo/CI_CD_Demo/src/math.js) achieves **97.87% Line Coverage** and **93.33% Branch Coverage**.
-2. **Uncovered Lines (90-91)**: Lines 90–91 (`window.MathLib = MathLib;`) in [src/math.js](file:///home/runner/work/CI_CD_Demo/CI_CD_Demo/src/math.js#L89-L91) are not executed during Node.js unit tests because `window` is `undefined` outside browser environments.
-3. **Frontend Test Coverage**: [public/app.js](file:///home/runner/work/CI_CD_Demo/CI_CD_Demo/public/app.js) currently has no automated test suite.
+### Key Architectural Highlights
+- **Zero-Dependency Footprint**: Utilizes native Node.js capabilities (`node:test`, `node:assert`, `node --check`) without bloated third-party frameworks.
+- **Dual-Environment Module Export**: [src/math.js](file:///home/runner/work/CI_CD_Demo/CI_CD_Demo/src/math.js#L77-L91) exports functions via `module.exports` when running under Node.js for unit testing, while attaching to `window.MathLib` when loaded in browser environments for the GitHub Pages frontend.
+- **Automated CI/CD Workflows**:
+  - **CI Workflow ([ci.yml](file:///home/runner/work/CI_CD_Demo/CI_CD_Demo/.github/workflows/ci.yml))**: Executes linting, tests, installs `agy` CLI, runs automated AI audits using `agy --print`, and commits/uploads [audit_report.md](file:///home/runner/work/CI_CD_Demo/CI_CD_Demo/audit_report.md).
+  - **CD Workflow ([cd.yml](file:///home/runner/work/CI_CD_Demo/CI_CD_Demo/.github/workflows/cd.yml))**: Automatically deploys the web application in `public/` to GitHub Pages upon successful CI completion.
 
 ---
 
-## 3. Architecture & Deployment Workflow
+## 2. Code Quality & Cleanliness
 
-```mermaid
-graph TD
-    A[Code Commit / PR] --> B[.github/workflows/ci.yml]
-    B --> C[npm run lint]
-    B --> D[npm test]
-    B --> E[Antigravity AI Code Audit]
-    E --> F[Generate audit_report.md]
-    B --> G[.github/workflows/cd.yml]
-    G --> H[Upload public/ to GitHub Pages]
+### Domain Logic ([src/math.js](file:///home/runner/work/CI_CD_Demo/CI_CD_Demo/src/math.js))
+- **JSDoc Documentation**: Every exported function (`add`, `subtract`, `multiply`, `divide`, `power`) and internal utility (`assertNumeric`) includes detailed JSDoc parameter and return types.
+- **Input Validation & Safety**: `assertNumeric` guards all arithmetic operations, throwing explicit `TypeError` for non-number inputs (`NaN`, `string`, `null`, `undefined`).
+- **Edge-Case Handling**: The `divide` function explicitly checks for division by both `0` and `-0` via `Object.is(b, -0)` to prevent standard JavaScript `Infinity` or `-Infinity` anomalies.
+
+### Web Application UI ([public/app.js](file:///home/runner/work/CI_CD_Demo/CI_CD_Demo/public/app.js))
+- **DOM Safety & Validation**: Parses user inputs safely with `parseFloat`, displays immediate user feedback for invalid entries, and traps domain errors gracefully via `try/catch`.
+- **Fallback Logic**: Features fallback inline expressions if `window.MathLib` is unavailable.
+
+---
+
+## 3. Test Coverage & Verification
+
+Testing was conducted using Node.js's native test runner (`node --test`) and built-in coverage reporting (`--experimental-test-coverage`).
+
+### Empirical Test Execution Results
+```
+✔ add() adds two numbers correctly
+✔ subtract() subtracts two numbers correctly
+✔ multiply() multiplies two numbers correctly
+✔ divide() divides two numbers correctly
+✔ divide() throws when dividing by zero
+✔ power() calculates the power of a base to an exponent
+✔ math functions throw TypeError for non-numeric arguments
+✔ divide() throws when dividing by negative zero
+
+Pass: 8 | Fail: 0 | Duration: 46.5ms
 ```
 
-### Architectural Findings & Deployment Issue
+### Coverage Metrics Breakdown
 
-- **Dual Module Export Pattern**: [src/math.js](file:///home/runner/work/CI_CD_Demo/CI_CD_Demo/src/math.js#L83-L91) exports the library via CommonJS (`module.exports`) for Node.js tests, while binding to `window.MathLib` in browser environments.
-- 🚨 **Deployment Discrepancy**:
-  - [public/index.html](file:///home/runner/work/CI_CD_Demo/CI_CD_Demo/public/index.html#L84) imports `<script src="math.js"></script>`.
-  - [cd.yml](file:///home/runner/work/CI_CD_Demo/CI_CD_Demo/.github/workflows/cd.yml#L33) deploys the `public/` folder directly to GitHub Pages.
-  - **Issue**: `src/math.js` is not present inside `public/`, nor is there a build script step copying `src/math.js` to `public/math.js`. When deployed, browsers encounter a 404 for `math.js`, forcing [public/app.js](file:///home/runner/work/CI_CD_Demo/CI_CD_Demo/public/app.js#L32-L46) to use its fallback inline operations rather than the `MathLib` engine.
+| File | Line Coverage | Branch Coverage | Function Coverage | Uncovered Lines |
+|---|---|---|---|---|
+| [src/math.js](file:///home/runner/work/CI_CD_Demo/CI_CD_Demo/src/math.js) | **97.87%** | **93.33%** | **100.00%** | Lines 90–91 (`window.MathLib` browser branch) |
+| [test/math.test.js](file:///home/runner/work/CI_CD_Demo/CI_CD_Demo/test/math.test.js) | **100.00%** | **100.00%** | **100.00%** | None |
+| **All Code Files** | **98.55%** | **96.77%** | **100.00%** | — |
 
----
-
-## 4. Adherence to AGENTS.md
-
-The codebase was evaluated against instructions specified in [AGENTS.md](file:///home/runner/work/CI_CD_Demo/CI_CD_Demo/AGENTS.md):
-
-| Instruction Clause | Status | Evidence & Notes |
-| :--- | :---: | :--- |
-| **1. Quality Control - Run Tests (`npm test`)** | **COMPLIANT** | Executed cleanly via Node's native test runner (`node --test test/*.test.js`). |
-| **1. Quality Control - Run Linting (`npm run lint`)** | **COMPLIANT** | Syntax validation (`node --check`) passes with zero errors. |
-| **1. Quality Control - Zero Breakages** | **COMPLIANT** | All 8 unit tests pass without failure. |
-| **2. Coding Standards - Modular & Documented** | **COMPLIANT** | JSDoc present across functions in [src/math.js](file:///home/runner/work/CI_CD_Demo/CI_CD_Demo/src/math.js) and [public/app.js](file:///home/runner/work/CI_CD_Demo/CI_CD_Demo/public/app.js). |
-| **2. Coding Standards - Native Test Runner** | **COMPLIANT** | [test/math.test.js](file:///home/runner/work/CI_CD_Demo/CI_CD_Demo/test/math.test.js) uses `node:test` and `node:assert`. |
-| **3. Dependency Management - Lightweight Footprint** | **COMPLIANT** | Zero 3rd-party dependencies added to [package.json](file:///home/runner/work/CI_CD_Demo/CI_CD_Demo/package.json). |
+*Note: The only uncovered lines (90–91) correspond to the browser window assignment, which is unreachable in Node.js test runner environments.*
 
 ---
 
-## Actionable Recommendations
+## 4. Adherence to AGENTS.md Instructions
 
-1. **Fix CD Pipeline Artifact Packaging**:
-   - Add a pre-deploy or build step to copy `src/math.js` into `public/math.js` before deploying to GitHub Pages, ensuring `window.MathLib` is loaded in production.
-2. **Expand Lint Script Scope**:
-   - Update the `"lint"` script in [package.json](file:///home/runner/work/CI_CD_Demo/CI_CD_Demo/package.json#L8) to include `public/*.js`:
-     ```json
-     "lint": "node --check src/*.js test/*.js public/*.js"
-     ```
-3. **Achieve 100% Core Branch Coverage**:
-   - Add a test case in [test/math.test.js](file:///home/runner/work/CI_CD_Demo/CI_CD_Demo/test/math.test.js) that simulates a browser environment (`global.window = {}`) to cover lines 90–91.
+The codebase strictly aligns with all mandates in [AGENTS.md](file:///home/runner/work/CI_CD_Demo/CI_CD_Demo/AGENTS.md):
+
+| Requirement | Status | Verification Detail |
+|---|---|---|
+| **1. Run Tests (`npm test`)** |  **Compliant** | Configured in [package.json](file:///home/runner/work/CI_CD_Demo/CI_CD_Demo/package.json#L7) (`node --test test/*.test.js`) and validated in CI. |
+| **2. Run Linting (`npm run lint`)** |  **Compliant** | Configured in [package.json](file:///home/runner/work/CI_CD_Demo/CI_CD_Demo/package.json#L8) (`node --check src/*.js test/*.js`) and validated in CI. |
+| **3. Zero Breakages** |  **Compliant** | 100% pass rate across all 8 unit tests. |
+| **4. Vanilla JavaScript** |  **Compliant** | Native ES/CommonJS JavaScript; no transpillers or non-standard syntax. |
+| **5. Native Node Test Runner** |  **Compliant** | Tests in [test/math.test.js](file:///home/runner/work/CI_CD_Demo/CI_CD_Demo/test/math.test.js) import `node:test` and `node:assert`. |
+| **6. Lightweight Footprint** |  **Compliant** | Zero third-party npm dependencies in `package.json`. |
+
+---
+
+## Recommendations for Future Enhancements
+
+1. **JSDOM integration for browser-branch testing**: Add a minimal DOM test fixture to reach 100% line coverage for the `window.MathLib` assignment lines (90–91).
+2. **HTML/CSS Linting**: Expand `npm run lint` to include HTML/CSS validation or headless browser testing (e.g., using Playwright or Puppeteer) for [public/index.html](file:///home/runner/work/CI_CD_Demo/CI_CD_Demo/public/index.html).
