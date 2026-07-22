@@ -243,3 +243,29 @@ input[type="number"]:focus {
   font-size: 0.8rem;
   color: var(--text-muted);
 }
+
+.live-event-banner {
+  background: linear-gradient(135deg, rgba(35, 134, 54, 0.2), rgba(88, 166, 255, 0.2));
+  border: 1px solid rgba(88, 166, 255, 0.4);
+  border-radius: 8px;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #58a6ff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.event-sparkle {
+  font-size: 1.2rem;
+  animation: spinSparkle 3s infinite linear;
+}
+
+@keyframes spinSparkle {
+  0% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.2) rotate(180deg); }
+  100% { transform: scale(1) rotate(360deg); }
+}
