@@ -165,3 +165,35 @@ When you run `npm test`, it calls Node's native test runner (`node --test test/*
 When you run `npm run lint`, it runs `node --check src/*.js test/*.js`:
 1. **Compilation Check:** The `--check` flag compile-checks the JavaScript files to catch syntax errors without executing the code.
 2. **Path Discovery:** It checks all `.js` files in `src/` and `test/` folders.
+
+---
+
+## 6. Continuous Delivery (CD) & GitHub Pages Setup
+
+### A. Chained CD Workflow Trigger (`workflow_run`)
+The CD pipeline ([`.github/workflows/cd.yml`](./.github/workflows/cd.yml)) is configured to run **only after the main CI pipeline (`ci.yml`) finishes successfully**:
+
+```yaml
+on:
+  workflow_run:
+    workflows: ["CI/CD Pipeline with Antigravity Agent"]
+    branches: ["main"]
+    types:
+      - completed
+  workflow_dispatch:
+
+jobs:
+  build-and-package-site:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+```
+
+### B. Repository Settings Configuration (GitHub Pages)
+To enable automated deployments to GitHub Pages:
+1. Navigate to **Repository Settings** ➔ **Pages**.
+2. Under **Build and deployment**, set **Source** to **GitHub Actions**.
+
+### C. Environment Protection Rules (`github-pages`)
+To establish an environment approval gate for production deployments:
+1. Navigate to **Repository Settings** ➔ **Environments** ➔ **`github-pages`**.
+2. Under **Deployment protection rules**, enable **Required reviewers** to require manual approval before deploying to live production.
+3. Under **Deployment branches**, restrict deployment access to `main` branch only.

@@ -75,5 +75,5 @@ This document defines the formal engineering plan and branching strategy for imp
 | :--- | :--- | :--- | :--- | :---: |
 | **#10** | Web UI & Dual Math Module | `feature/cd-web-ui` | `public/index.html`, `public/style.css`, `public/app.js`, `src/math.js` | **Done** |
 | **#11** | CD Workflow Pipeline | `feature/cd-workflow` | `.github/workflows/cd.yml` | **Done** |
-| **#12** | Environment & Pages Setup | `feature/cd-pages-config` | Environment protection docs & settings | **To-Do** |
+| **#12** | Environment & Pages Setup | `feature/cd-pages-config` | Environment protection docs & settings | **In-Progress** |
 | **#13** | E2E Testing & Verification | `feature/cd-e2e-verification` | Live GitHub Pages URL verification | **To-Do** |
