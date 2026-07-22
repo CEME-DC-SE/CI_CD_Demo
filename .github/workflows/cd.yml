@@ -1,8 +1,11 @@
 name: Continuous Delivery Pipeline
 
 on:
-  push:
-    branches: [ "main" ]
+  workflow_run:
+    workflows: ["CI/CD Pipeline with Antigravity Agent"]
+    branches: ["main"]
+    types:
+      - completed
   workflow_dispatch:
 
 permissions:
@@ -17,25 +20,12 @@ concurrency:
 jobs:
   build-and-package-site:
     name: Build & Package Site
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install Dependencies
-        run: npm install
-
-      - name: Run Linter
-        run: npm run lint
-
-      - name: Run Tests
-        run: npm test
 
       - name: Upload GitHub Pages Artifact
         uses: actions/upload-pages-artifact@v3
