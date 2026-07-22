@@ -25,7 +25,7 @@ This document defines the formal engineering plan and branching strategy for imp
 
 ## 🛠️ Detailed Task & Branch Roadmap
 
-### 🔹 Issue #1: Web Calculator UI & Dual Module Compatibility
+### 🔹 Issue #10: Web Calculator UI & Dual Module Compatibility
 *   **Branch**: `feature/cd-web-ui`
 *   **State Progression**: `To-Do` ➔ `In-Progress` ➔ `Done`
 *   **Tasks**:
@@ -37,7 +37,7 @@ This document defines the formal engineering plan and branching strategy for imp
 
 ---
 
-### 🔹 Issue #2: Dedicated Continuous Delivery Workflow (`.github/workflows/cd.yml`)
+### 🔹 Issue #11: Dedicated Continuous Delivery Workflow (`.github/workflows/cd.yml`)
 *   **Branch**: `feature/cd-workflow`
 *   **State Progression**: `To-Do` ➔ `In-Progress` ➔ `Done`
 *   **Tasks**:
@@ -49,7 +49,7 @@ This document defines the formal engineering plan and branching strategy for imp
 
 ---
 
-### 🔹 Issue #3: GitHub Pages Configuration & Environment Approval Gate
+### 🔹 Issue #12: GitHub Pages Configuration & Environment Approval Gate
 *   **Branch**: `feature/cd-pages-config`
 *   **State Progression**: `To-Do` ➔ `In-Progress` ➔ `Done`
 *   **Tasks**:
@@ -58,7 +58,7 @@ This document defines the formal engineering plan and branching strategy for imp
 
 ---
 
-### 🔹 Issue #4: End-to-End Pipeline Execution & Live Deployment Verification
+### 🔹 Issue #13: End-to-End Pipeline Execution & Live Deployment Verification
 *   **Branch**: `feature/cd-e2e-verification`
 *   **State Progression**: `To-Do` ➔ `In-Progress` ➔ `Done`
 *   **Tasks**:
@@ -73,7 +73,7 @@ This document defines the formal engineering plan and branching strategy for imp
 
 | Issue # | Title | Target Branch | Primary Deliverable | Status |
 | :--- | :--- | :--- | :--- | :---: |
-| **#1** | Web UI & Dual Math Module | `feature/cd-web-ui` | `public/index.html`, `public/style.css`, `public/app.js`, `src/math.js` | **Done** |
-| **#2** | CD Workflow Pipeline | `feature/cd-workflow` | `.github/workflows/cd.yml` | **Done** |
-| **#3** | Environment & Pages Setup | `feature/cd-pages-config` | Environment protection docs & settings | **To-Do** |
-| **#4** | E2E Testing & Verification | `feature/cd-e2e-verification` | Live GitHub Pages URL verification | **To-Do** |
+| **#10** | Web UI & Dual Math Module | `feature/cd-web-ui` | `public/index.html`, `public/style.css`, `public/app.js`, `src/math.js` | **Done** |
+| **#11** | CD Workflow Pipeline | `feature/cd-workflow` | `.github/workflows/cd.yml` | **Done** |
+| **#12** | Environment & Pages Setup | `feature/cd-pages-config` | Environment protection docs & settings | **To-Do** |
+| **#13** | E2E Testing & Verification | `feature/cd-e2e-verification` | Live GitHub Pages URL verification | **To-Do** |
